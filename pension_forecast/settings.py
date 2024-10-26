@@ -24,9 +24,9 @@ SECRET_KEY = "django-insecure-lb&61+w-8_3^grvdfsu4)57(zamvddm+gw588e@qv^p@8x7gj3
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+CORS_ALLOW_ALL_ORIGINS = True
 ALLOWED_HOSTS = ["*"]
-
+WSGI_APPLICATION = 'pension_forecast.wsgi.application'
 
 # Application definition
 
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "pension_forecast_app",
     'rest_framework',
     'drf_yasg',
+    'corsheaders'
 ]
 
 
@@ -51,6 +52,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 LOGGING = {
@@ -100,8 +103,6 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "pension_forecast.wsgi.application"
-
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -112,7 +113,10 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
-
+CORS_ALLOWED_ORIGINS = [
+    "http://192.168.1.131",
+    "http://localhost:8000"  # замените на домен вашего фронтенда
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
