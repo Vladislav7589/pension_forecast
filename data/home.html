@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Прогнозирование раннего выхода на пенсию</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            padding: 1rem;
+            text-align: center;
+            color: white;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .container {
+            width: 80%;
+            margin: 2rem auto;
+            padding: 1rem;
+            background-color: #fff;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        section {
+            margin: 2rem 0;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 0.3rem;
+        }
+        p, ul {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        .endpoint {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background-color: #f1f1f1;
+            border-radius: 8px;
+        }
+        .method {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        code {
+            display: block;
+            background-color: #eee;
+            padding: 0.5rem;
+            border-radius: 4px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Прогнозирование раннего выхода на пенсию</h1>
+    </header>
+
+    <div class="container">
+        <section>
+            <p>Добро пожаловать в API для прогнозирования раннего выхода на пенсию! Используйте этот API для загрузки данных и получения прогноза.</p>
+        </section>
+
+        <section>
+            <h2>Endpoints</h2>
+
+            <!--  <div class="endpoint">
+                <p><span class="method">POST</span> <strong>/api/predict/</strong></p>
+                <p>Принимает данные о человеке (возраст, место жительства и т.д.) и возвращает прогноз на основе модели машинного обучения.</p>
+                <p><strong>Пример запроса:</strong></p>
+                <code>
+{
+  "age": 45,
+  "residence": "Москва",
+  "other_field": "значение"
+}
+                </code>
+                <p><strong>Пример ответа:</strong></p>
+                <code>
+{
+  "id": 1,
+  "prediction": "вероятность выхода на пенсию"
+}
+                </code>
+            </div> -->
+
+            <div class="endpoint">
+                <p><span class="method">POST</span> <strong>/predict-dataset/</strong></p>
+                <p>Принимает два файла с датасетом (CSV) и возвращает прогнозы для каждого счета.</p>
+                <p><strong>Пример использования:</strong> Загрузите CSV-файл, содержащий данные о нескольких людях, чтобы получить прогнозы для каждого.</p>
+                <p><strong>Пример ответа:</strong></p>
+                <code>
+[
+  {"id": 1, "prediction": "значение прогноза"},
+  {"id": 2, "prediction": "значение прогноза"}
+]
+                </code>
+            </div>
+        </section>
+
+        <section>
+            <h2>Инструкции по использованию</h2>
+            <p>Для начала работы отправьте POST-запрос на один из эндпоинтов, указанных выше. Убедитесь, что данные форматированы правильно.</p>
+            <ul>
+                 <!--<li><strong>Для /api/predict/:</strong> отправляйте JSON с полями для одного человека.</li>-->
+                <li><strong>Для /api/predict-dataset/:</strong> отправьте файл в формате CSV, содержащий необходимые данные.</li>
+            </ul>
+        </section>
+    </div>
+</body>
+</html>
