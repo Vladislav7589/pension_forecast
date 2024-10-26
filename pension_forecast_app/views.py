@@ -26,8 +26,8 @@ class DatasetPredictionView(APIView):
 
     def post(self, request):
         try:
-            # contributers = request.FILES.get('contributers')
-            contributers = request.FILES.get('cntr')
+            contributers = request.FILES.get('contributers')
+            # contributers = request.FILES.get('cntr')
 
             # transactions = request.FILES.get('transactions')
 
