@@ -116,7 +116,8 @@ DATABASES = {
 }
 CORS_ALLOWED_ORIGINS = [
     "http://192.168.1.131:5173",
-    "http://localhost:8000"  # замените на домен вашего фронтенда
+    "http://localhost:5173",
+    "http://localhost:8000",  # замените на домен вашего фронтенда
 ]
 
 # Password validation
