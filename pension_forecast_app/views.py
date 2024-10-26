@@ -1,15 +1,13 @@
 import json
-import os
-import pickle
 import pandas as pd
-from sklearn.preprocessing import LabelEncoder
 import joblib
+import logging
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
-import logging
+from sklearn.metrics import f1_score
+from sklearn.preprocessing import LabelEncoder
 
 logger = logging.getLogger(__name__)
 
@@ -39,13 +37,7 @@ class DatasetPredictionView(APIView):
 
             logger.info(f"df_contributers: {len(df_contributers)}\n ")
 
-            predictions_df = self.load_model_and_predict(df_contributers)
-
-            # clean_df = self.pre_processing(df_contributers, df_transactions)
-            # predict_data = self.make_prediction(clean_df)
-            # logger.info(f"df_contributers: {len(predict_data)}")
-            # f1_score(data['actual'], predict_data, average='weighted')
-            f1 = "f1"
+            predictions_df, f1 = self.load_model_and_predict(df_contributers)
 
             # Создадим CSV для ответа
             response = HttpResponse(content_type='text/csv')
@@ -71,49 +63,6 @@ class DatasetPredictionView(APIView):
             return pd.read_csv(file, sep=sep, encoding=encoding, index_col=0)
         except Exception as e:
             raise ValueError(f"Failed to read CSV file: {e}")
-
-    def make_prediction(self, input_data):
-        """
-        :param input_data: DataFrame с входными данными
-        :return: Series с предсказаниями
-        """
-        model_path = 'data/multi_output_stacked_ensemble_model.pkl'
-        with open(model_path, 'rb') as file:
-            model = joblib.load(file)
-
-        predictions = model.predict(input_data)
-        return predictions
-
-    def pre_processing(self, cntrbtrs, trnsctns):
-
-        grouped_df = trnsctns.groupby('accnt_id').agg({
-            'mvmnt_type': lambda x: ', '.join(map(str, x)),
-            'sum_type': lambda x: ', '.join(map(str, x)),
-            'cmmnt': lambda x: ', '.join(map(str, x)),
-            'sum': lambda x: ', '.join(map(str, x)),
-            'oprtn_date': lambda x: ', '.join(map(str, x))
-        }).reset_index()
-
-        full_table = pd.merge(cntrbtrs, grouped_df, on='accnt_id', how='inner')
-
-        columns_to_drop_with_nans = ['slctn_nmbr', 'prvs_npf', 'dstrct', 'city', 'sttlmnt', 'brth_plc', 'pstl_code',
-                                     'clnt_id', 'addrss_type', 'accnt_bgn_date', 'phn', 'email', 'lk', 'assgn_npo',
-                                     'assgn_ops', 'okato']
-        full_table_new = full_table.drop(columns=columns_to_drop_with_nans)
-
-        le_gndr = LabelEncoder()
-        le_accnt_status = LabelEncoder()
-        le_rgn = LabelEncoder()
-
-        full_table_new['gndr_encoded'] = le_gndr.fit_transform(full_table_new['gndr'])
-        full_table_new['accnt_status_encoded'] = le_accnt_status.fit_transform(full_table_new['accnt_status'])
-
-        columns_to_drop_with_nans = ['rgn', 'accnt_status', 'gndr']
-        full_table_new = full_table_new.drop(columns=columns_to_drop_with_nans)
-
-        full_table_new = full_table_new.dropna()
-
-        return full_table_new
 
     def load_model_and_predict(self, df, model_path='data/multi_output_stacked_ensemble_model.pkl'):
         """
@@ -154,6 +103,7 @@ class DatasetPredictionView(APIView):
         ids = input_data['clnt_id']
         target_column = ['erly_pnsn_flg']  # Замените на список целевых колонок
         features = full_table_new.drop(columns=target_column + ['clnt_id', 'accnt_id'])
+        true_labels = full_table_new[target_column]  # Истинные метки
 
         # Загрузка обученной модели
         model = joblib.load(model_path)
@@ -169,27 +119,9 @@ class DatasetPredictionView(APIView):
         columns_order = ['clnt_id'] + target_column
         predictions_df = predictions_df[columns_order]
 
-        return predictions_df
+        # Расчет F1-score
+        f1 = f1_score(true_labels, predictions, average='weighted', zero_division=1)
+        print(f'F1 Score: {f1:.2f}')
 
+        return predictions_df, f1
 
-class IrisView(APIView):
-
-    def post(self, request):
-        try:
-            data = json.loads(request.body)
-            sepal_length = data.get("sepal_length")
-            sepal_width = data.get("sepal_width")
-            petal_length = data.get("petal_length")
-            petal_width = data.get("petal_width")
-
-            model_path = 'data/model_iris.pkl'
-            with open(model_path, 'rb') as file:
-                model = joblib.load(file)
-
-            # Прогнозируем класс цветка
-            prediction = model.predict([[sepal_length, sepal_width, petal_length, petal_width]])
-            logger.info(f"Prediction: {int(prediction[0])}")
-
-            return JsonResponse({"prediction": int(prediction[0])})
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=500)

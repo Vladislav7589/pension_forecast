@@ -21,7 +21,7 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from pension_forecast_app import views
-from pension_forecast_app.views import DatasetPredictionView, IrisView
+from pension_forecast_app.views import DatasetPredictionView
 
 
 schema_view = get_schema_view(
@@ -39,7 +39,6 @@ urlpatterns = [
     path("info", views.welcome_view, name="info"),
     path('admin/', admin.site.urls),
     path('predict/', DatasetPredictionView.as_view(), name='predict'),
-    path('predict-iris/', IrisView.as_view(), name='predict-iris'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 
 ]
