@@ -115,12 +115,12 @@ DATABASES = {
     }
 }
 # CORS_ALLOW_ALL_ORIGINS = True
-# CORS_ALLOWED_ORIGINS = [
-#     "http://192.168.1.131:5173",
-#     "http://localhost:5173",
-#     "http://192.168.0.102",
-#     "http://localhost:8000",  # замените на домен вашего фронтенда
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://192.168.1.131:5173",
+    "http://localhost:5173",
+    "http://192.168.0.102",
+    "http://localhost:8000",  # замените на домен вашего фронтенда
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
