@@ -24,7 +24,7 @@ SECRET_KEY = "django-insecure-lb&61+w-8_3^grvdfsu4)57(zamvddm+gw588e@qv^p@8x7gj3
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
 # ALLOWED_HOSTS = ['127.0.0.1', '109.234.34.78', 'v2016237.hosted-by-vdsina.ru']
 ALLOWED_HOSTS = ['*']
 WSGI_APPLICATION = 'pension_forecast.wsgi.application'
@@ -115,12 +115,12 @@ DATABASES = {
     }
 }
 # CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGINS = [
-    "http://192.168.1.131:5173",
-    "http://localhost:5173",
-    "http://192.168.0.102",
-    "http://localhost:8000",  # замените на домен вашего фронтенда
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://192.168.1.131:5173",
+#     "http://localhost:5173",
+#     "http://192.168.0.102",
+#     "http://localhost:8000",  # замените на домен вашего фронтенда
+# ]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
