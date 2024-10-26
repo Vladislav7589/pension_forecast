@@ -25,7 +25,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 CORS_ALLOW_ALL_ORIGINS = True
-ALLOWED_HOSTS = ['109.234.34.78', 'v2016237.hosted-by-vdsina.ru']
+# ALLOWED_HOSTS = ['127.0.0.1', '109.234.34.78', 'v2016237.hosted-by-vdsina.ru']
+ALLOWED_HOSTS = ['*']
 WSGI_APPLICATION = 'pension_forecast.wsgi.application'
 
 # Application definition
