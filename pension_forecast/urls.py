@@ -40,7 +40,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('predict/', DatasetPredictionView.as_view(), name='predict'),
     path('predict/', DatasetPredictionView.as_view(), name='predict'),  # Для POST запроса
-    # path('predict/results/', DatasetPredictionView.as_view(), name='predict-results'),
+    path('predict/results/', DatasetPredictionView.as_view(), name='predict-results'),
     # Для GET запросаpath('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 
 ]
