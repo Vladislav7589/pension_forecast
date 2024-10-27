@@ -60,21 +60,23 @@ class DatasetPredictionView(APIView):
         """
         # global predictions_storage
         try:
-            if 'data' not in self.predictions_storage:
-                return JsonResponse({"error": "Нет доступных предсказаний. Пожалуйста, выполните сначала запрос POST."},
-                                    status=404)
+            # if 'data' not in self.predictions_storage:
+            #     return JsonResponse({"error": "Нет доступных предсказаний. Пожалуйста, выполните сначала запрос POST."},
+            #                         status=404)
 
             # Подготовка ответа
-            predictions_df = self.predictions_storage['data']
-            f1_score_value = self.predictions_storage['f1_score']
+            #predictions_df = self.predictions_storage['data']
+            predictions_df = pd.read_csv("sampled_data.csv", encoding="utf-8", sep=",")
+
+            # f1_score_value = self.predictions_storage['f1_score']
 
             # Создание CSV-ответа
             response = HttpResponse(content_type='text/csv')
             response['Content-Disposition'] = 'attachment; filename="predictions.csv"'
-            predictions_df.to_csv(response, index=False)
+            predictions_df.to_csv(response, index=False, encoding='utf-8')
 
             # Добавим F1-score в заголовки
-            response['X-F1-Score'] = str(f1_score_value)
+            # response['X-F1-Score'] = str(f1_score_value)
             # self.predictions_storage.clear()
             return response
 
