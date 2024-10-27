@@ -39,9 +39,9 @@ urlpatterns = [
     path("info", views.welcome_view, name="info"),
     path('admin/', admin.site.urls),
     # path('predict/', DatasetPredictionView.as_view(), name='predict'),
-    path('predict/', DatasetPredictionView.as_view({'post': 'post'}), name='predict'),
-    path('predict/results/', DatasetPredictionView.as_view({'get': 'get'}), name='predict-results'),  # GET для получения результатов
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('predict/', DatasetPredictionView.as_view(), name='predict'),  # Для POST запроса
+    path('predict/results/', DatasetPredictionView.as_view(), name='predict-results'),
+    # Для GET запросаpath('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 
 ]
 # urlpatterns += router.urls
