@@ -78,13 +78,11 @@ class DatasetPredictionView(APIView):
 
             # Добавим F1-score в заголовки
             response['X-F1-Score'] = str(f1_score_value)
-
+            self.predictions_storage = {}
             return response
 
         except Exception as e:
             return JsonResponse({"error": f"Произошла непредвиденная ошибка: {str(e)}"}, status=500)
-        finally:
-            self.predictions_storage = {}
 
     # def post(self, request):
     #     try:
