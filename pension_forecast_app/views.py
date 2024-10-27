@@ -25,112 +25,112 @@ class DatasetPredictionView(APIView):
     """
     predictions_storage = {}
 
-    def post(self, request):
-        predictions_storage = {}
-        try:
-            contributers = request.FILES.get('contributers')
-            transactions = request.FILES.get('transactions')
-
-            if not contributers:
-                return Response({"error": "Файл обязателен"}, status=400)
-
-            df_contributers = self.read_csv_file(contributers)
-
-            logger.info(f"df_contributers: {len(df_contributers)}\n ")
-
-            predictions_df, f1 = self.load_model_and_predict(df_contributers)
-
-            # Сохраним предсказания в глобальной переменной
-
-            self.predictions_storage['data'] = predictions_df
-            self.predictions_storage['f1_score'] = f1
-
-            # Вернем 204 No Content
-            return Response(status=200)
-
-        except KeyError as e:
-            return JsonResponse({"error": f"KeyError: Колонка {str(e)} не найдена в данных"}, status=400)
-
-        except pd.errors.MergeError as e:
-            return JsonResponse({"error": f"MergeError: {str(e)}"}, status=500)
-
-        except Exception as e:
-            return JsonResponse({"error": f"Произошла непредвиденная ошибка: {str(e)}"}, status=500)
-
-    def get(self, request):
-        """
-        Получить сохраненные предсказания.
-        """
-        # global predictions_storage
-        try:
-            if 'data' not in self.predictions_storage:
-                return JsonResponse({"error": "Нет доступных предсказаний. Пожалуйста, выполните сначала запрос POST."},
-                                    status=404)
-
-            # Подготовка ответа
-            predictions_df = self.predictions_storage['data']
-            f1_score_value = self.predictions_storage['f1_score']
-
-            # Создание CSV-ответа
-            response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = 'attachment; filename="predictions.csv"'
-            predictions_df.to_csv(response, index=False)
-
-            # Добавим F1-score в заголовки
-            response['X-F1-Score'] = str(f1_score_value)
-            # self.predictions_storage.clear()
-            return response
-
-        except Exception as e:
-            return JsonResponse({"error": f"Произошла непредвиденная ошибка: {str(e)}"}, status=500)
-
     # def post(self, request):
-    #
+    #     predictions_storage = {}
     #     try:
-    #         # contributers = request.FILES.get('contributers')
-    #         # contributers = request.FILES.get('contributers')
-    #         logger.info(f"df_contributers: {len(request.FILES)}\n ")
-    #         logger.info(f"requests: {request}\n ")
-    #         logger.info(f"requests: {request.FILES}\n ")
+    #         contributers = request.FILES.get('contributers')
+    #         transactions = request.FILES.get('transactions')
     #
-    #         print(request)
-    #         if not request.FILES:
+    #         if not contributers:
     #             return Response({"error": "Файл обязателен"}, status=400)
-    #         for file_name, file in request.FILES.items():
-    #             if file_name == "contributers":
-    #                 df_contributers = self.read_csv_file(file)
-    #         # contributers = request.FILES.get('cntr')
     #
-    #         # transactions = request.FILES.get('transactions')
-    #
-    #         # if not contributers:
-    #         #     return Response({"error": "Both files are required"}, status=400)
-    #
-    #         # df_contributers = self.read_csv_file(contributers)
-    #         # df_transactions = self.read_csv_file(transactions)
+    #         df_contributers = self.read_csv_file(contributers)
     #
     #         logger.info(f"df_contributers: {len(df_contributers)}\n ")
     #
     #         predictions_df, f1 = self.load_model_and_predict(df_contributers)
     #
-    #         # Создадим CSV для ответа
-    #         response = HttpResponse(content_type='text/csv')
-    #         response['Content-Disposition'] = 'attachment; filename="predictions.csv"'
-    #         predictions_df.to_csv(response, index=False)
-    #         # df_contributers.to_csv(response, index=False)
-    #         # Добавим F1-score в заголовки ответа
-    #         response['X-F1-Score'] = str(f1)
+    #         # Сохраним предсказания в глобальной переменной
     #
-    #         return response
+    #         self.predictions_storage['data'] = predictions_df
+    #         self.predictions_storage['f1_score'] = f1
+    #
+    #         # Вернем 204 No Content
+    #         return Response(status=200)
     #
     #     except KeyError as e:
-    #         return JsonResponse({"error": f"KeyError: Column {str(e)} not found in data"}, status=400)
+    #         return JsonResponse({"error": f"KeyError: Колонка {str(e)} не найдена в данных"}, status=400)
     #
     #     except pd.errors.MergeError as e:
     #         return JsonResponse({"error": f"MergeError: {str(e)}"}, status=500)
     #
     #     except Exception as e:
-    #         return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
+    #         return JsonResponse({"error": f"Произошла непредвиденная ошибка: {str(e)}"}, status=500)
+    #
+    # def get(self, request):
+    #     """
+    #     Получить сохраненные предсказания.
+    #     """
+    #     # global predictions_storage
+    #     try:
+    #         if 'data' not in self.predictions_storage:
+    #             return JsonResponse({"error": "Нет доступных предсказаний. Пожалуйста, выполните сначала запрос POST."},
+    #                                 status=404)
+    #
+    #         # Подготовка ответа
+    #         predictions_df = self.predictions_storage['data']
+    #         f1_score_value = self.predictions_storage['f1_score']
+    #
+    #         # Создание CSV-ответа
+    #         response = HttpResponse(content_type='text/csv')
+    #         response['Content-Disposition'] = 'attachment; filename="predictions.csv"'
+    #         predictions_df.to_csv(response, index=False)
+    #
+    #         # Добавим F1-score в заголовки
+    #         response['X-F1-Score'] = str(f1_score_value)
+    #         # self.predictions_storage.clear()
+    #         return response
+    #
+    #     except Exception as e:
+    #         return JsonResponse({"error": f"Произошла непредвиденная ошибка: {str(e)}"}, status=500)
+
+    def post(self, request):
+
+        try:
+            # contributers = request.FILES.get('contributers')
+            # contributers = request.FILES.get('contributers')
+            logger.info(f"df_contributers: {len(request.FILES)}\n ")
+            logger.info(f"requests: {request}\n ")
+            logger.info(f"requests: {request.FILES}\n ")
+
+            print(request)
+            if not request.FILES:
+                return Response({"error": "Файл обязателен"}, status=400)
+            for file_name, file in request.FILES.items():
+                if file_name == "contributers":
+                    df_contributers = self.read_csv_file(file)
+            # contributers = request.FILES.get('cntr')
+
+            # transactions = request.FILES.get('transactions')
+
+            # if not contributers:
+            #     return Response({"error": "Both files are required"}, status=400)
+
+            # df_contributers = self.read_csv_file(contributers)
+            # df_transactions = self.read_csv_file(transactions)
+
+            logger.info(f"df_contributers: {len(df_contributers)}\n ")
+
+            predictions_df, f1 = self.load_model_and_predict(df_contributers)
+
+            # Создадим CSV для ответа
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="predictions.csv"'
+            predictions_df.to_csv(response, index=False)
+            # df_contributers.to_csv(response, index=False)
+            # Добавим F1-score в заголовки ответа
+            response['X-F1-Score'] = str(f1)
+
+            return response
+
+        except KeyError as e:
+            return JsonResponse({"error": f"KeyError: Column {str(e)} not found in data"}, status=400)
+
+        except pd.errors.MergeError as e:
+            return JsonResponse({"error": f"MergeError: {str(e)}"}, status=500)
+
+        except Exception as e:
+            return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
 
     def read_csv_file(self, file, encoding="cp1251", sep=';'):
         try:
