@@ -1,9 +1,10 @@
-import json
 import pandas as pd
 import joblib
 import logging
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
+from pension_forecast_app.sd.preproccesing import preprocess_data
+from pension_forecast_app.sd.test import test_3
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from sklearn.metrics import f1_score
@@ -34,12 +35,8 @@ class DatasetPredictionView(APIView):
             if not contributers:
                 return Response({"error": "Файл обязателен"}, status=400)
 
-            df_contributers = self.read_csv_file(contributers)
-
-            logger.info(f"df_contributers: {len(df_contributers)}\n ")
-
-            predictions_df, f1 = self.load_model_and_predict(df_contributers)
-
+            cleaned_df = preprocess_data(contributers, transactions)
+            predictions_df, f1 = test_3(cleaned_df)
             # Сохраним предсказания в глобальной переменной
 
             self.predictions_storage['data'] = predictions_df
