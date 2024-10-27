@@ -11,7 +11,7 @@ from sklearn.preprocessing import LabelEncoder
 
 logger = logging.getLogger(__name__)
 
-predictions_storage = {}
+
 def welcome_view(request):
     """
     :return: Приветственный html файл для описания endpoints
@@ -23,10 +23,12 @@ class DatasetPredictionView(APIView):
     """
     View для возвращения предиктивных данных в виде CSV
     """
-
+    predictions_storage = {}
     def post(self, request):
+        predictions_storage = {}
         try:
             contributers = request.FILES.get('contributers')
+            transactions = request.FILES.get('transactions')
 
             if not contributers:
                 return Response({"error": "Файл обязателен"}, status=400)
@@ -38,9 +40,9 @@ class DatasetPredictionView(APIView):
             predictions_df, f1 = self.load_model_and_predict(df_contributers)
 
             # Сохраним предсказания в глобальной переменной
-            global predictions_storage
-            predictions_storage['data'] = predictions_df
-            predictions_storage['f1_score'] = f1
+
+            self.predictions_storage['data'] = predictions_df
+            self.predictions_storage['f1_score'] = f1
 
             # Вернем 204 No Content
             return Response(status=204)
@@ -58,14 +60,14 @@ class DatasetPredictionView(APIView):
         """
         Получить сохраненные предсказания.
         """
-        global predictions_storage
-        if 'data' not in predictions_storage:
+        # global predictions_storage
+        if 'data' not in self.predictions_storage:
             return JsonResponse({"error": "Нет доступных предсказаний. Пожалуйста, выполните сначала запрос POST."},
                                 status=404)
 
         # Подготовка ответа
-        predictions_df = predictions_storage['data']
-        f1_score_value = predictions_storage['f1_score']
+        predictions_df = self.predictions_storage['data']
+        f1_score_value = self.predictions_storage['f1_score']
 
         # Создание CSV-ответа
         response = HttpResponse(content_type='text/csv')
