@@ -29,6 +29,7 @@ class DatasetPredictionView(APIView):
             # contributers = request.FILES.get('contributers')
             # contributers = request.FILES.get('contributers')
             logger.info(f"df_contributers: {len(request.FILES)}\n ")
+            print(request)
             if not request.FILES:
                 return Response({"error": "Файл обязателен"}, status=400)
             for file_name, file in request.FILES.items():
