@@ -41,7 +41,7 @@ class DatasetPredictionView(APIView):
             # if not contributers:
             #     return Response({"error": "Both files are required"}, status=400)
 
-            df_contributers = self.read_csv_file(contributers)
+            # df_contributers = self.read_csv_file(contributers)
             # df_transactions = self.read_csv_file(transactions)
 
             logger.info(f"df_contributers: {len(df_contributers)}\n ")
