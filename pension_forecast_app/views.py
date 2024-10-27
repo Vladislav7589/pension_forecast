@@ -24,6 +24,7 @@ class DatasetPredictionView(APIView):
     View для возвращения предиктивных данных в виде CSV
     """
     predictions_storage = {}
+
     def post(self, request):
         predictions_storage = {}
         try:
@@ -61,23 +62,30 @@ class DatasetPredictionView(APIView):
         Получить сохраненные предсказания.
         """
         # global predictions_storage
-        if 'data' not in self.predictions_storage:
-            return JsonResponse({"error": "Нет доступных предсказаний. Пожалуйста, выполните сначала запрос POST."},
-                                status=404)
+        try:
+            if 'data' not in self.predictions_storage:
+                return JsonResponse({"error": "Нет доступных предсказаний. Пожалуйста, выполните сначала запрос POST."},
+                                    status=404)
 
-        # Подготовка ответа
-        predictions_df = self.predictions_storage['data']
-        f1_score_value = self.predictions_storage['f1_score']
+            # Подготовка ответа
+            predictions_df = self.predictions_storage['data']
+            f1_score_value = self.predictions_storage['f1_score']
 
-        # Создание CSV-ответа
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="predictions.csv"'
-        predictions_df.to_csv(response, index=False)
+            # Создание CSV-ответа
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="predictions.csv"'
+            predictions_df.to_csv(response, index=False)
 
-        # Добавим F1-score в заголовки
-        response['X-F1-Score'] = str(f1_score_value)
+            # Добавим F1-score в заголовки
+            response['X-F1-Score'] = str(f1_score_value)
 
-        return response
+            return response
+
+        except Exception as e:
+            return JsonResponse({"error": f"Произошла непредвиденная ошибка: {str(e)}"}, status=500)
+        finally:
+            self.predictions_storage = {}
+
     # def post(self, request):
     #     try:
     #         contributers = request.FILES.get('contributers')
@@ -180,4 +188,3 @@ class DatasetPredictionView(APIView):
         print(f'F1 Score: {f1:.2f}')
 
         return predictions_df, f1
-
