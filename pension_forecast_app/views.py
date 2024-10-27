@@ -78,7 +78,7 @@ class DatasetPredictionView(APIView):
 
             # Добавим F1-score в заголовки
             response['X-F1-Score'] = str(f1_score_value)
-            self.predictions_storage.clear()
+            # self.predictions_storage.clear()
             return response
 
         except Exception as e:
